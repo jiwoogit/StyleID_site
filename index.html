@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
+  <meta name="keywords" content="StyleID, style injection, style injection in diffusion, style diffusion">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Style Injection in Diffusion: A Training-free Approach for Adapting Large-scale Diffusion Models for Style Transfer</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script> -->
+  <!-- <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script> -->
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+  <script
+	type="text/javascript"
+    async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML"
+  ></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://github.com/jiwoogit">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://jiwoogit.github.io/DCP-GAN_site">
+            DCP-GAN
+          </a>
+          <a class="navbar-item" href="https://jiwoogit.github.io/StyleID_site">
+            StyleID
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-3 publication-title">Style Injection in Diffusion: A Training-free Approach for Adapting Large-scale Diffusion Models for Style Transfer (CVPR 2024)</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              Jiwoo Chung<sup>*</sup>,</span>
+            <span class="author-block">
+              Sangeek Hyun<sup>*</sup>,</span>
+            <span class="author-block">
+              Jae-pil Heo<sup>†</sup></span>
+            </span>
+          </div>
+
+          <div class="is-size-6 publication-authors">
+            <span class="author-block">*: equal contribution, †: corresponding author</span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Sungkyunkwan University</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2312.09008.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2312.09008"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/jiwoogit/StyleID"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero teaser is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <img src="./static/images/start.png" alt="Main Results">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Despite the impressive generative capabilities of diffusion models, existing diffusion model-based style transfer methods require inference-stage optimization (e.g. fine-tuning or textual inversion of style) which is time-consuming, or fails to leverage the generative ability of large-scale diffusion models. 
+          </p>
+          <p>
+          To address these issues, we introduce a novel artistic style transfer method based on a pre-trained large-scale diffusion model without any optimization. Specifically, we manipulate the features of self-attention layers as the way the cross-attention mechanism works; in the generation process, substituting the key and value of content with those of style image. This approach provides several desirable characteristics for style transfer including 1) preservation of content by transferring similar styles into similar image patches and 2) transfer of style based on similarity of local texture (e.g. edge) between content and style images.
+          </p>
+          <p>
+          Furthermore, we introduce query preservation and attention temperature scaling to mitigate the issue of disruption of original content, and initial latent AdaIN to deal with the disharmonious color. Our experimental results demonstrate that our proposed method surpasses state-of-the-art methods in both conventional and diffusion-based style transfer baselines.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Method Overview</h2>
+        <div class="content has-text-justified">
+          <p>
+            (Left) We first invert content image \(z^c_0\) and style image \(z^s_0\) into the latent noise space as \(z^c_T\) and \(z^s_T\), respectively. 
+            Then, we initialize the initial noise of stylized image \(z_T^{cs}\) from initial latent AdaIN which combines the content and style noise, \(z_T^c\) and \(z_T^s\).
+            While performing the reverse diffusion process with \(z^{cs}_T\), we inject the information of content and style by attention-based style injection and attention temperature scaling.
+          </p>
+          <p></p>
+            (Right) Style injection is basically the manipulation of self-attention layer during the reverse diffusion process.
+            Specifically, at time step \(t\), we substitute the <i>key</i> and <i>value</i> in SA of stylized image with those of style features.
+            Then, we scale the magnitude of the attention map to deal with the magnitude decrease that the substitution of feature leads to. 
+            Initial latent AdaIN produces the initial noise \(z_T^{cs}\) by combining style noise \(z_T^s\) and content noise \(z_T^s\).
+          </p>
+          <img src="./static/images/main_method.png" alt="Overview for our method">
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Results</h2>
+        <div class="content has-text-justified">
+          <img src="./static/images/result.png" alt="Qualitative results for our method">
+        </div>
+        <hr>
+        <h2 class="title is-4">Query Preservation (0.0~1.0)</h2>
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-4 has-text-centered">
+            <img src="./static/images/rain_princess.png"
+                 class="interpolation-image"
+                 alt="Interpolate start reference image."/>
+            <p>Style</p>
+          </div>
+          <div class="column interpolation-video-column is-centered">
+            <div id="interpolation-image-wrapper" class="is-centered">
+              Loading...
+            </div>
+            <input class="slider is-fullwidth is-large is-info"
+                   id="interpolation-slider"
+                   step="1" min="0" max="100" value="75" type="range">
+          </div>
+          <div class="column is-4 has-text-centered">
+            <img src="./static/images/golden_gate.png"
+                 class="interpolation-image"
+                 alt="Interpolation end reference image."/>
+            <p class="is-bold">Content</p>
+          </div>
+        </div>
+        <hr>
+
+        <h2 class="title is-4">Attention Scaling (1.0~2.0)</h2>
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-4 has-text-centered">
+            <img src="./static/images/the_starry_night.png"
+                 class="interpolation-image"
+                 alt="Interpolate start reference image."/>
+            <p>Style</p>
+          </div>
+          <div class="column interpolation-video-column is-centered">
+            <div id="interpolation-image-wrapper2" class="is-centered">
+              Loading...
+            </div>
+            <input class="slider is-fullwidth is-large is-info"
+                   id="interpolation-slider2"
+                   step="1" min="0" max="100" value="50" type="range">
+          </div>
+          <div class="column is-4 has-text-centered">
+            <img src="./static/images/bradpitt.png"
+                 class="interpolation-image"
+                 alt="Interpolation end reference image."/>
+            <p class="is-bold">Content</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{chung2023style,
+  title={Style Injection in Diffusion: A Training-free Approach for Adapting Large-scale Diffusion Models for Style Transfer},
+  author={Chung, Jiwoo and Hyun, Sangeek and Heo, Jae-Pil},
+  journal={arXiv preprint arXiv:2312.09008},
+  year={2023}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website template is borrowed from <a href="https://nerfies.github.io/">Nerfies</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
